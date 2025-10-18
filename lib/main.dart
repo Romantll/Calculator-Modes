@@ -1,5 +1,4 @@
-import 'dart:ui';
-
+import 'dart:ui' show ImageFilter;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart'; //must add with flutter pub add shared_preferences
@@ -79,7 +78,7 @@ class CalculatorPage extends StatefulWidget{
 }
 
 class _CalculatorPageState extends State<CalculatorPage>{
-  bool _showDebug = false;
+  final bool _showDebug = false;
   String _history = '';
   String _main = '0';
 
@@ -93,7 +92,7 @@ class _CalculatorPageState extends State<CalculatorPage>{
     '7', '8', '9', '-',
     '4', '5', '6', '+',
     '1', '2', '3', '=',
-    '0', '.', '', '',
+    '0', '.', 
   ];
 
   void _onKeyTap(String key){
@@ -252,7 +251,7 @@ class _CalculatorPageState extends State<CalculatorPage>{
     //Trim trailing zeros
     var s = value.toStringAsFixed(10);
     s = s.replaceFirst(RegExp(r'\.0+$'), '');
-    s = s.replaceFirst(RegExp(r'(\.\d*?)0+\$'), r'$1');
+    s = s.replaceFirst(RegExp(r'(\.\d*?)0+$'), r'$1');
     return s;
   }
 
@@ -323,6 +322,13 @@ class _CalculatorPageState extends State<CalculatorPage>{
                           Colors.white.withOpacity(0.08),
                         ],
                       ),
+                    ),
+                    child: Text(
+                      _main,
+                      textAlign: TextAlign.right,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(fontSize: 44, fontWeight: FontWeight.w700),
                     ),
                   ),
                 ),
