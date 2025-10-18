@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart'; //must add with flutter pub add shared_preferences
@@ -302,18 +304,27 @@ class _CalculatorPageState extends State<CalculatorPage>{
               ),
               const SizedBox(height: 6),
               //Main Display
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 20),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(16),
-                  border: Border.all(color: cs.outlineVariant),
-                ),
-                child: Text(
-                  _main,
-                  textAlign: TextAlign.right,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(fontSize: 40, fontWeight: FontWeight.w600),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(20),
+                child: BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 14, sigmaY: 14),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 20),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(
+                        color: Colors.white.withOpacity(0.28),
+                      ),
+                      gradient: LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [
+                          Colors.white.withOpacity(0.28),
+                          Colors.white.withOpacity(0.08),
+                        ],
+                      ),
+                    ),
+                  ),
                 ),
               ),
               const SizedBox(height: 16),
@@ -359,24 +370,42 @@ class _CalcButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
 
-    return FilledButton(
-      onPressed: onTap,
-      onLongPress: onLongPress,
-      style: ButtonStyle(
-        backgroundColor: WidgetStatePropertyAll(
-          isAccent ? cs.primaryContainer : cs.surfaceVariant,
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(18),
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
+        child: Material(
+          color: Colors.white.withOpacity(isAccent ? 0.20 : 0.12),
+          child: InkWell(
+            onTap: onTap,
+            onLongPress: onLongPress,
+            splashColor: cs.primary.withValues(alpha: 0.25), //testing no depricated opacity
+            highlightColor: cs.primary.withOpacity(0.06),
+            child: Container(
+              alignment: Alignment.center,
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.white.withOpacity(0.28)),
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    Colors.white.withOpacity(isAccent ? 0.30 : 0.18),
+                    Colors.white.withOpacity(isAccent ? 0.10 : 0.08)
+                  ],
+                ),
+              ),
+              child: Text(
+                label,
+                style: TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.w700,
+                  color: isAccent ? cs.onPrimaryContainer : cs.onSurface,
+                ),
+              ),
+            ),
+          ),
         ),
-        foregroundColor: WidgetStatePropertyAll(
-          isAccent ? cs.onPrimaryContainer : cs.onSurface,
-        ),
-        shape: WidgetStatePropertyAll(
-          RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        ),
-        padding: const WidgetStatePropertyAll(EdgeInsets.symmetric(vertical: 16)),
-      ),
-      child: Text(
-        label,
-        style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w600),
       ),
     );
   }
